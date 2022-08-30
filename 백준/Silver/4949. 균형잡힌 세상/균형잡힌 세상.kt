@@ -1,33 +1,51 @@
 import java.io.*
 import java.util.Stack
-fun main() = with(BufferedReader(InputStreamReader(System.`in`))){
 
-    val stack =Stack<Char>()
-    while(true){
-        val str = readLine()
-        if( str =="." ) return
+fun main() = with(BufferedReader(InputStreamReader(System.`in`))) {
 
-        str.forEach { curChar ->
+    while (true) {
+        val input = readLine()
+        if (input == ".") return
 
-            val lastStackElement = if(stack.isNotEmpty()) stack.peek() else null
+        val stack = Stack<Char>()
 
-            if (curChar =='[' || curChar ==']' || curChar =='(' || curChar==')'){
+        var isBalanced = true
 
-                if(lastStackElement == '('){
+        input.forEach { ch ->
+            when (ch) {
+                '[' -> {
+                    stack.push(ch)
+                }
+                '(' -> {
+                    stack.push(ch)
+                }
+                ']' -> {
+                    if (stack.isNotEmpty() && stack.peek() == '[') {
+                        stack.pop()
+                    } else {
+                        isBalanced = false
+                        return@forEach
+                    }
+                }
+                ')' -> {
+                    if (stack.isNotEmpty() && stack.peek() == '(') {
+                        stack.pop()
+                    } else {
+                        isBalanced = false
+                        return@forEach
+                    }
+                }
 
-                    if(curChar ==')') stack.pop()
-
-                    else stack.add(curChar)
-                } else if ( lastStackElement == '['){
-
-                    if (curChar == ']') stack.pop()
-                    else stack.add(curChar)
-                } else stack.add(curChar)
             }
         }
-        if (stack.isEmpty()) println("yes") else println("no")
-        stack.clear()
 
+        if (stack.isNotEmpty())
+            isBalanced = false
+
+        when (isBalanced) {
+            true -> println("yes")
+            false -> println("no")
+        }
     }
     close()
 
